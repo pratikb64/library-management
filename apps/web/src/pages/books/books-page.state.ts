@@ -5,12 +5,14 @@ interface BooksPageState {
   isAddBookModalOpen: boolean;
   isImportBooksModalOpen: boolean;
   deleteBookData?: DeleteBookObj;
+  editBookData?: EditBookObj;
 }
 
 interface BooksPageActions {
   setIsAddBookModalOpen: (isAddBookModalOpen: boolean) => void;
   setIsImportBooksModalOpen: (isImportBooksModalOpen: boolean) => void;
   setDeleteBookModalData: (args: DeleteBookObj) => void;
+  setEditBookModalData: (args: EditBookObj) => void;
 }
 
 export type BooksPage = BooksPageState & BooksPageActions;
@@ -24,11 +26,20 @@ export const booksPageState = createStore<BooksPage>((set) => ({
   setDeleteBookModalData: (args) => {
     set({ deleteBookData: args });
   },
+  setEditBookModalData: (args) =>
+    set({
+      editBookData: args,
+    }),
 }));
 
 export const useBooksPageState = () => useStore(booksPageState);
 
 interface DeleteBookObj {
   isDeleteBookModalOpen: boolean;
+  book?: Book;
+}
+
+interface EditBookObj {
+  isEditBookModalOpen: boolean;
   book?: Book;
 }

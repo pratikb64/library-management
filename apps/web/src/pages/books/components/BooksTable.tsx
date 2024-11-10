@@ -27,7 +27,6 @@ import {
 } from "@tanstack/react-table";
 import { MoreHorizontal, PencilIcon, TrashIcon } from "lucide-react";
 import { useState } from "react";
-import { Link } from "react-router-dom";
 
 export const columns: ColumnDef<Book>[] = [
   {
@@ -86,7 +85,8 @@ export const columns: ColumnDef<Book>[] = [
     enableHiding: false,
     cell: ({ row }) => {
       const [isOpen, setIsOpen] = useState(false);
-      const { setDeleteBookModalData } = useBooksPageState();
+      const { setDeleteBookModalData, setEditBookModalData } =
+        useBooksPageState();
 
       const onDeleteClick = () => {
         setDeleteBookModalData({
@@ -106,13 +106,18 @@ export const columns: ColumnDef<Book>[] = [
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               <DropdownMenuItem className="cursor-pointer text-xs">
-                <Link
-                  to={`/books/${row.original.id}`}
+                <button
                   className="flex w-full items-center gap-2"
+                  onClick={() => {
+                    setEditBookModalData({
+                      isEditBookModalOpen: true,
+                      book: row.original,
+                    });
+                  }}
                 >
                   <PencilIcon className="mr-1 size-3.5" />
                   <span>Edit</span>
-                </Link>
+                </button>
               </DropdownMenuItem>
               <DropdownMenuItem
                 className="flex w-full cursor-pointer items-center gap-2 text-xs text-red-500 hover:!text-red-600"

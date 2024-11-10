@@ -33,8 +33,8 @@ import { toast } from "sonner";
 import { z } from "zod";
 
 const addBookFormSchema = z.object({
-  title: z.string().min(2).max(100),
-  authors: z.string().min(2).max(100),
+  title: z.string().min(2).max(500),
+  authors: z.string().min(2).max(500),
   isbn: z.preprocess((val) => Number(val), z.number()),
   isbn13: z.preprocess((val) => Number(val), z.number()),
   language_code: z.string().min(2).max(8),
@@ -43,7 +43,7 @@ const addBookFormSchema = z.object({
   ratings_count: z.preprocess((val) => Number(val), z.number()),
   text_reviews_count: z.preprocess((val) => Number(val), z.number()),
   publication_date: z.date(),
-  publisher: z.string().min(2).max(100),
+  publisher: z.string().min(2).max(500),
   rent_fee: z.preprocess((val) => Number(val), z.number()),
 });
 

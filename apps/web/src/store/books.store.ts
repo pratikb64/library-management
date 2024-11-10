@@ -5,6 +5,7 @@ import {
   getBooksService,
   ImportBooksArgs,
   importBooksService,
+  updateBookService,
 } from "@/services/books.services";
 import { AsyncState, Book } from "@/types";
 import { createStore, useStore } from "zustand";
@@ -16,6 +17,7 @@ interface BooksState {
     createBookAsyncState: AsyncState;
     deleteBookAsyncState: AsyncState;
     importBooksAsyncState: AsyncState;
+    updateBookAsyncState: AsyncState;
   };
 }
 
@@ -24,6 +26,7 @@ interface BooksActions {
   createBook: (book: Book) => Promise<void>;
   deleteBook: (id: number) => Promise<void>;
   importBooks: (args: ImportBooksArgs) => Promise<void>;
+  updateBook: (id: number, book: Partial<Book>) => Promise<void>;
 }
 
 export type BooksStore = BooksState & BooksActions;
@@ -35,6 +38,7 @@ export const booksStore = createStore<BooksStore>((set, get) => ({
     createBookAsyncState: AsyncState.Idle,
     deleteBookAsyncState: AsyncState.Idle,
     importBooksAsyncState: AsyncState.Idle,
+    updateBookAsyncState: AsyncState.Idle,
   },
   fetchBooks: async (args) => {
     set((state) => ({
@@ -110,6 +114,26 @@ export const booksStore = createStore<BooksStore>((set, get) => ({
       asyncStates: {
         ...state.asyncStates,
         importBooksAsyncState: AsyncState.Success,
+      },
+    }));
+  },
+  updateBook: async (id, book) => {
+    set((state) => ({
+      asyncStates: {
+        ...state.asyncStates,
+        updateBookAsyncState: AsyncState.Pending,
+      },
+    }));
+
+    // Update book
+    const updatedBook = await updateBookService({ id, book });
+
+    // Update book in state
+    set((state) => ({
+      books: state.books.map((b) => (b.id === id ? updatedBook.data : b)),
+      asyncStates: {
+        ...state.asyncStates,
+        updateBookAsyncState: AsyncState.Success,
       },
     }));
   },

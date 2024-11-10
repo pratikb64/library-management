@@ -2,6 +2,7 @@ import { AddBookModal } from "./components/AddBookModal";
 import { BooksPageActions } from "./components/BooksPageActions";
 import { BooksTable } from "./components/BooksTable";
 import { DeleteBookModal } from "./components/DeleteBookModal";
+import { EditBookModal } from "./components/EditBookModal";
 import { ImportBooksModal } from "./components/ImportBooksModal";
 import { AppLayout } from "@/components/app-layout";
 import { useBooksStore } from "@/store/books.store";
@@ -20,6 +21,7 @@ export const Books = () => {
       <DeleteBookModal />
       <AddBookModal />
       <ImportBooksModal />
+      <EditBookModal />
     </AppLayout>
   );
 };

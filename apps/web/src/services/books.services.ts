@@ -73,3 +73,22 @@ export const importBooksService = async (args: ImportBooksArgs) => {
 
   return data as ApiResponse<undefined>;
 };
+
+interface UpdateBookArgs {
+  id: number;
+  book: Partial<Book>;
+}
+
+export const updateBookService = async (args: UpdateBookArgs) => {
+  const response = await fetch(`${BACKEND_URL}/api/books/${args.id}`, {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(args.book),
+  });
+
+  const data = await response.json();
+
+  return data as ApiResponse<Book>;
+};

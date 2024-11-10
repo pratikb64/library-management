@@ -31,7 +31,7 @@ export const DeleteBookModal = () => {
 
   return (
     <Dialog
-      open={deleteBookData?.isDeleteBookModalOpen || false}
+      open={deleteBookData?.isDeleteBookModalOpen}
       onOpenChange={(open) =>
         setDeleteBookModalData({
           isDeleteBookModalOpen: open,
