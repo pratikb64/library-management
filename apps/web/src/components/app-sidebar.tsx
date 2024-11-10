@@ -32,16 +32,20 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           <SidebarGroup>
             <SidebarGroupContent>
               <SidebarMenu>
-                {routes.map((route) => (
-                  <SidebarMenuItem key={route.title}>
-                    <SidebarMenuButton
-                      asChild
-                      isActive={route.path === location.pathname}
-                    >
-                      <Link to={route.path}>{route.title}</Link>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                ))}
+                {routes.map((route) => {
+                  if (route.showInSidebar) {
+                    return (
+                      <SidebarMenuItem key={route.title}>
+                        <SidebarMenuButton
+                          asChild
+                          isActive={route.path === location.pathname}
+                        >
+                          <Link to={route.path}>{route.title}</Link>
+                        </SidebarMenuButton>
+                      </SidebarMenuItem>
+                    );
+                  }
+                })}
               </SidebarMenu>
             </SidebarGroupContent>
           </SidebarGroup>

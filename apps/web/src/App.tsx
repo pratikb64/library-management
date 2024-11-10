@@ -1,5 +1,6 @@
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { Toaster } from "./components/ui/sonner";
 import { routes } from "./routes";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
 const router = createBrowserRouter([
   ...routes.map((route) => ({
@@ -9,7 +10,12 @@ const router = createBrowserRouter([
 ]);
 
 function App() {
-  return <RouterProvider router={router} />;
+  return (
+    <>
+      <RouterProvider router={router} />
+      <Toaster richColors={true} />
+    </>
+  );
 }
 
 export default App;
