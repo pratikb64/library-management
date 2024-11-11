@@ -1,5 +1,5 @@
-import { useBooksPageState } from "../books-page.state";
-import { BookSearch } from "./BookSearch";
+import { useMembersPageState } from "../members-page.state";
+import { MemberSearch } from "./MemberSearch";
 import { TableRowSkeleton } from "@/components/TableRowSkeleton";
 import { Button } from "@/components/ui/button";
 import {
@@ -16,8 +16,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { useBooksStore } from "@/store/books.store";
-import { AsyncState, Book } from "@/types";
+import { useMembersStore } from "@/store/members.store";
+import { AsyncState, Member } from "@/types";
 import {
   ColumnDef,
   flexRender,
@@ -28,77 +28,60 @@ import {
 import { MoreHorizontal, PencilIcon, TrashIcon } from "lucide-react";
 import { useState } from "react";
 
-export const columns: ColumnDef<Book>[] = [
+export const columns: ColumnDef<Member>[] = [
   {
-    accessorKey: "title",
-    header: "Title",
+    accessorKey: "first_name",
+    header: "First Name",
     cell: ({ row }) => (
       <div className="w-40 overflow-hidden text-ellipsis whitespace-nowrap">
-        {row.getValue("title")}
+        {row.getValue("first_name")}
       </div>
     ),
   },
   {
-    accessorKey: "authors",
-    header: "Authors",
+    accessorKey: "last_name",
+    header: "Last Name",
     cell: ({ row }) => (
       <div className="w-40 overflow-hidden text-ellipsis whitespace-nowrap">
-        {row.getValue("authors")}
+        {row.getValue("last_name")}
       </div>
     ),
   },
   {
-    accessorKey: "average_rating",
-    header: "Average Rating",
-    cell: ({ row }) => <div>{row.getValue("average_rating")}</div>,
-  },
-  {
-    accessorKey: "language_code",
-    header: "Language Code",
-    cell: ({ row }) => <div>{row.getValue("language_code")}</div>,
-  },
-  {
-    accessorKey: "publication_date",
-    header: "Publication Date",
+    accessorKey: "email",
+    header: "Email",
     cell: ({ row }) => (
-      <div>
-        {new Date(row.getValue("publication_date")).toLocaleDateString()}
+      <div className="w-40 overflow-hidden text-ellipsis whitespace-nowrap">
+        {row.getValue("email")}
       </div>
     ),
   },
   {
-    accessorKey: "rent_fee",
-    header: "Rent Fee / Day",
-    cell: ({ row }) => {
-      const rentFee = parseFloat(row.getValue("rent_fee"));
-
-      const formatted = new Intl.NumberFormat("en-IN", {
-        style: "currency",
-        currency: "INR",
-      }).format(rentFee);
-
-      return <div>{formatted}</div>;
-    },
+    accessorKey: "joining_date",
+    header: "Joining Date",
+    cell: ({ row }) => (
+      <div>{new Date(row.getValue("joining_date")).toLocaleDateString()}</div>
+    ),
   },
   {
     id: "actions",
     enableHiding: false,
     cell: ({ row }) => {
       const [isOpen, setIsOpen] = useState(false);
-      const { setDeleteBookModalData, setEditBookModalData } =
-        useBooksPageState();
+      const { setDeleteMemberModalData, setEditMemberModalData } =
+        useMembersPageState();
 
       const onDeleteClick = () => {
-        setDeleteBookModalData({
-          isDeleteBookModalOpen: true,
-          book: row.original,
+        setDeleteMemberModalData({
+          isDeleteMemberModalOpen: true,
+          member: row.original,
         });
       };
 
       const onEditClick = () => {
-        setEditBookModalData({
-          isEditBookModalOpen: true,
-          book: row.original,
+        setEditMemberModalData({
+          isEditMemberModalOpen: true,
+          member: row.original,
         });
       };
 
@@ -134,16 +117,16 @@ export const columns: ColumnDef<Book>[] = [
   },
 ];
 
-export const BooksTable = () => {
-  const { books, asyncStates } = useBooksStore();
-  const areBooksFetching =
-    asyncStates.fetchBooksAsyncState !== AsyncState.Success;
-  const fetchBooksErrored =
-    asyncStates.fetchBooksAsyncState === AsyncState.Error;
+export const MembersTable = () => {
+  const { members, asyncStates } = useMembersStore();
+  const areMembersFetching =
+    asyncStates.fetchMembersAsyncState !== AsyncState.Success;
+  const fetchMembersErrored =
+    asyncStates.fetchMembersAsyncState === AsyncState.Error;
   const pageSize = 12;
 
   const table = useReactTable({
-    data: books,
+    data: members,
     columns,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
@@ -156,7 +139,7 @@ export const BooksTable = () => {
 
   return (
     <div>
-      <BookSearch />
+      <MemberSearch />
       <div>
         <Table>
           <TableHeader>
@@ -192,30 +175,30 @@ export const BooksTable = () => {
                 </TableRow>
               ))}
 
-            {!fetchBooksErrored &&
-              !areBooksFetching &&
+            {!fetchMembersErrored &&
+              !areMembersFetching &&
               !table.getRowModel().rows?.length && (
                 <TableRow>
                   <TableCell
                     colSpan={columns.length}
                     className="h-16 text-center"
                   >
-                    Books not found.
+                    Members not found.
                   </TableCell>
                 </TableRow>
               )}
 
-            {!fetchBooksErrored && areBooksFetching && (
+            {!fetchMembersErrored && areMembersFetching && (
               <TableRowSkeleton rows={pageSize} columns={columns.length} />
             )}
 
-            {fetchBooksErrored && (
+            {fetchMembersErrored && (
               <TableRow>
                 <TableCell
                   colSpan={columns.length}
                   className="h-16 text-center"
                 >
-                  Error fetching books.
+                  Error fetching members.
                 </TableCell>
               </TableRow>
             )}

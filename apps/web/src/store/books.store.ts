@@ -49,7 +49,20 @@ export const booksStore = createStore<BooksStore>((set, get) => ({
       books: [],
     }));
 
-    const books = await getBooksService(args);
+    const books = await getBooksService(args)
+      .then((res) => res)
+      .catch(() => null);
+
+    if (!books) {
+      set((state) => ({
+        books: [],
+        asyncStates: {
+          ...state.asyncStates,
+          fetchBooksAsyncState: AsyncState.Error,
+        },
+      }));
+      return Promise.reject();
+    }
 
     set({ books: books.data });
 
@@ -69,7 +82,19 @@ export const booksStore = createStore<BooksStore>((set, get) => ({
     }));
 
     // Create book
-    const createdBook = await createBookService(book);
+    const createdBook = await createBookService(book)
+      .then((res) => res)
+      .catch(() => null);
+
+    if (!createdBook) {
+      set((state) => ({
+        asyncStates: {
+          ...state.asyncStates,
+          createBookAsyncState: AsyncState.Error,
+        },
+      }));
+      return Promise.reject();
+    }
 
     // Add created book to state
     set((state) => ({
@@ -88,7 +113,19 @@ export const booksStore = createStore<BooksStore>((set, get) => ({
       },
     }));
 
-    await deleteBookService(id);
+    const isDeleted = await deleteBookService(id)
+      .then((res) => res)
+      .catch(() => null);
+
+    if (!isDeleted) {
+      set((state) => ({
+        asyncStates: {
+          ...state.asyncStates,
+          deleteBookAsyncState: AsyncState.Error,
+        },
+      }));
+      return Promise.reject();
+    }
 
     set((state) => ({
       books: state.books.filter((book) => book.id !== id),
@@ -106,7 +143,19 @@ export const booksStore = createStore<BooksStore>((set, get) => ({
       },
     }));
 
-    await importBooksService(args);
+    const isDataImported = await importBooksService(args)
+      .then((res) => res)
+      .catch(() => null);
+
+    if (!isDataImported) {
+      set((state) => ({
+        asyncStates: {
+          ...state.asyncStates,
+          importBooksAsyncState: AsyncState.Error,
+        },
+      }));
+      return Promise.reject();
+    }
 
     await get().fetchBooks();
 
@@ -126,7 +175,19 @@ export const booksStore = createStore<BooksStore>((set, get) => ({
     }));
 
     // Update book
-    const updatedBook = await updateBookService({ id, book });
+    const updatedBook = await updateBookService({ id, book })
+      .then((res) => res)
+      .catch(() => null);
+
+    if (!updatedBook) {
+      set((state) => ({
+        asyncStates: {
+          ...state.asyncStates,
+          updateBookAsyncState: AsyncState.Error,
+        },
+      }));
+      return Promise.reject();
+    }
 
     // Update book in state
     set((state) => ({

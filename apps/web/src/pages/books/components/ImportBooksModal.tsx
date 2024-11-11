@@ -44,10 +44,17 @@ export const ImportBooksModal = () => {
   });
 
   const onSubmit = async (values: z.infer<typeof importBooksFormSchema>) => {
-    await importBooks({ title: values.title, no_of_books: values.no_of_books });
-    toast.success("Books imported successfully");
-    setIsImportBooksModalOpen(false);
-    form.reset();
+    try {
+      await importBooks({
+        title: values.title,
+        no_of_books: values.no_of_books,
+      });
+      toast.success("Books imported successfully");
+      setIsImportBooksModalOpen(false);
+      form.reset();
+    } catch (error) {
+      toast.error("Something went wrong");
+    }
   };
 
   return (

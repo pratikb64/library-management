@@ -1,17 +1,24 @@
-import { Books } from "./pages/books";
-import { Home } from "./pages/home";
+import { BooksPage } from "./pages/books";
+import { HomePage } from "./pages/home";
+import { MembersPage } from "./pages/members";
 
 export const routes = [
   {
     title: "Home",
     path: "/",
-    element: <Home />,
+    element: <HomePage />,
     showInSidebar: true,
   },
   {
     title: "Books",
     path: "/books",
-    element: <Books />,
+    element: <BooksPage />,
+    showInSidebar: true,
+  },
+  {
+    title: "Members",
+    path: "/members",
+    element: <MembersPage />,
     showInSidebar: true,
   },
 ];

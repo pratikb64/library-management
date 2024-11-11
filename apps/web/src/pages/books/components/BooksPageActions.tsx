@@ -6,8 +6,14 @@ export const BooksPageActions = () => {
     useBooksPageState();
   return (
     <div className="flex gap-2">
-      <Button onClick={() => setIsAddBookModalOpen(true)}>Add book</Button>
-      <Button variant="outline" onClick={() => setIsImportBooksModalOpen(true)}>
+      <Button onClick={() => setIsAddBookModalOpen(true)} size={"sm"}>
+        Add book
+      </Button>
+      <Button
+        variant="outline"
+        onClick={() => setIsImportBooksModalOpen(true)}
+        size={"sm"}
+      >
         Import books
       </Button>
     </div>

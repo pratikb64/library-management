@@ -1,12 +1,17 @@
 import { Skeleton } from "@/components/ui/skeleton";
 import { TableCell, TableRow } from "@/components/ui/table";
 
-export const BooksTableRowSkeleton = () => {
+interface Props {
+  rows: number;
+  columns: number;
+}
+
+export const TableRowSkeleton = (props: Props) => {
   return (
     <>
-      {[...Array(10)].map((_, i) => (
+      {[...Array(props.rows)].map((_, i) => (
         <TableRow key={i}>
-          {[...Array(7)].map((_, i) => (
+          {[...Array(props.columns)].map((_, i) => (
             <TableCell key={i}>
               <Skeleton className="h-8 w-full bg-gray-100" />
             </TableCell>

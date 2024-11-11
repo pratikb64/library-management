@@ -23,6 +23,10 @@ export const getBooksService = async (args?: GetBooksArgs) => {
     },
   });
 
+  if (!response.ok) {
+    return Promise.reject();
+  }
+
   const data = await response.json();
 
   return data as ApiPaginatedResponse<Book[]>;
@@ -37,6 +41,10 @@ export const createBookService = async (book: Book) => {
     body: JSON.stringify(book),
   });
 
+  if (!response.ok) {
+    return Promise.reject();
+  }
+
   const data = await response.json();
 
   return data as ApiResponse<Book>;
@@ -49,6 +57,10 @@ export const deleteBookService = async (id: number) => {
       "Content-Type": "application/json",
     },
   });
+
+  if (!response.ok) {
+    return Promise.reject();
+  }
 
   const data = await response.json();
 
@@ -69,6 +81,10 @@ export const importBooksService = async (args: ImportBooksArgs) => {
     body: JSON.stringify(args),
   });
 
+  if (!response.ok) {
+    return Promise.reject();
+  }
+
   const data = await response.json();
 
   return data as ApiResponse<undefined>;
@@ -87,6 +103,10 @@ export const updateBookService = async (args: UpdateBookArgs) => {
     },
     body: JSON.stringify(args.book),
   });
+
+  if (!response.ok) {
+    return Promise.reject();
+  }
 
   const data = await response.json();
 

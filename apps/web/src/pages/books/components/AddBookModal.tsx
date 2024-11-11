@@ -71,15 +71,18 @@ export const AddBookModal = () => {
 
   const onSubmit = async (values: z.infer<typeof addBookFormSchema>) => {
     const loadingToastId = toast.loading("Creating book...");
-    await createBook({
-      ...values,
-      id: 0,
-      publication_date: values.publication_date.toISOString(),
-    });
-    form.reset();
-    form.reset();
-    toast.success("Book created successfully", { id: loadingToastId });
-    setIsAddBookModalOpen(false);
+    try {
+      await createBook({
+        ...values,
+        id: 0,
+        publication_date: values.publication_date.toISOString(),
+      });
+      form.reset();
+      toast.success("Book created successfully", { id: loadingToastId });
+      setIsAddBookModalOpen(false);
+    } catch (error) {
+      toast.error("Something went wrong", { id: loadingToastId });
+    }
   };
 
   return (

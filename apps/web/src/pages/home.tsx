@@ -1,5 +1,5 @@
 import { AppLayout } from "@/components/app-layout";
 
-export const Home = () => {
+export const HomePage = () => {
   return <AppLayout title={"Home"}>Home</AppLayout>;
 };

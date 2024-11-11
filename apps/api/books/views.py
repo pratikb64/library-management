@@ -16,7 +16,6 @@ def getAndCreateBooks(request):
     try:
         if request.method == "GET":
             books = Book.objects.all()
-            total_count = books.count()
 
             if "title" in request.GET:
                 books = books.filter(title__icontains=request.GET["title"])
@@ -27,6 +26,8 @@ def getAndCreateBooks(request):
             limit = min(int(request.GET.get("limit", 20)), 100)
             page = int(request.GET.get("page", 1))
             offset = (page - 1) * limit
+
+            total_count = books.count()
 
             books = books[offset : offset + limit]
 

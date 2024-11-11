@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     "corsheaders",
     # Local apps
     "books",
+    "members",
 ]
 
 MIDDLEWARE = [

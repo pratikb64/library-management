@@ -7,12 +7,15 @@ import { ImportBooksModal } from "./components/ImportBooksModal";
 import { AppLayout } from "@/components/app-layout";
 import { useBooksStore } from "@/store/books.store";
 import { useEffect } from "react";
+import { toast } from "sonner";
 
-export const Books = () => {
+export const BooksPage = () => {
   const { fetchBooks } = useBooksStore();
 
   useEffect(() => {
-    fetchBooks();
+    fetchBooks().catch(() => {
+      toast.error("Something went wrong, try again later!");
+    });
   }, []);
 
   return (

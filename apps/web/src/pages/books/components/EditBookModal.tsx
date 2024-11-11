@@ -75,23 +75,28 @@ export const EditBookModal = () => {
       toast.error("Something went wrong");
       return;
     }
+
     const loadingToastId = toast.loading("Updating book...");
 
-    const changedFields = Object.keys(form.formState.dirtyFields).reduce(
-      (acc, key) => ({
-        ...acc,
-        [key]: values[key as keyof z.infer<typeof editBookFormSchema>],
-      }),
-      {},
-    );
+    try {
+      const changedFields = Object.keys(form.formState.dirtyFields).reduce(
+        (acc, key) => ({
+          ...acc,
+          [key]: values[key as keyof z.infer<typeof editBookFormSchema>],
+        }),
+        {},
+      );
 
-    await updateBook(editBookData.book.id, changedFields);
-    toast.success("Book updated successfully", { id: loadingToastId });
+      await updateBook(editBookData.book.id, changedFields);
+      toast.success("Book updated successfully", { id: loadingToastId });
 
-    setEditBookModalData({
-      isEditBookModalOpen: false,
-      book: undefined,
-    });
+      setEditBookModalData({
+        isEditBookModalOpen: false,
+        book: undefined,
+      });
+    } catch (error) {
+      toast.error("Something went wrong", { id: loadingToastId });
+    }
   };
 
   return (

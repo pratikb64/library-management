@@ -1,10 +1,3 @@
-export enum AsyncState {
-  Idle = "idle",
-  Pending = "pending",
-  Success = "success",
-  Error = "error",
-}
-
 export interface Book {
   id: number;
   title: string;
@@ -19,6 +12,22 @@ export interface Book {
   publication_date: string;
   publisher: string;
   rent_fee: number;
+}
+
+export interface Member {
+  id: number;
+  first_name: string;
+  last_name: string;
+  email: string;
+  joining_date: string;
+}
+
+//
+export enum AsyncState {
+  Idle = "idle",
+  Pending = "pending",
+  Success = "success",
+  Error = "error",
 }
 
 export interface ApiPaginatedResponse<T> {
