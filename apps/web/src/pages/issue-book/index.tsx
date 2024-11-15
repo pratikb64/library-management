@@ -1,13 +1,13 @@
-import { BooksTable } from "../books/components/BooksTable";
-import { MembersTable } from "../members/components/MembersTable";
-import { IssueBookModal } from "./components/IssueBookModal";
-import { useIssueBooksPageState } from "./issue-book-page.state";
 import { AppLayout } from "@/components/app-layout";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { toast } from "sonner";
+import { BooksTable } from "../books/components/BooksTable";
+import { MembersTable } from "../members/components/MembersTable";
+import { IssueBookModal } from "./components/IssueBookModal";
+import { useIssueBooksPageState } from "./issue-book-page.state";
 
-export const IssueBook = () => {
+export const IssueBookPage = () => {
   const {
     memberTableInstance,
     bookTableInstance,

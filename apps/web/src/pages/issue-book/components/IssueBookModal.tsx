@@ -9,21 +9,24 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Separator } from "@/components/ui/separator";
+import { useBooksStore } from "@/store/books.store";
 import { AsyncState } from "@/types";
 import { useCallback } from "react";
 import { toast } from "sonner";
 
 export const IssueBookModal = () => {
   const {
-    issueBook,
-    issueBookAsyncErrMessage,
     memberTableInstance,
     bookTableInstance,
-    asyncStates,
     isIssueBookModalOpen,
     setIsIssueBookModalOpen,
-    setIssueBookAsyncErrMessage,
   } = useIssueBooksPageState();
+  const {
+    issueBook,
+    issueBookAsyncErrMessage,
+    asyncStates,
+    setIssueBookAsyncErrMessage,
+  } = useBooksStore();
 
   const onIssueBookClick = useCallback(async () => {
     const selectedBook =

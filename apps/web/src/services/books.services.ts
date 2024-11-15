@@ -135,3 +135,23 @@ export const issueBookService = async (args: IssueBookArgs) => {
 
   return data as ApiResponse<undefined>;
 };
+
+export const returnBookService = async (id: number) => {
+  const response = await fetch(`${BACKEND_URL}/api/books/return`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      transaction_id: id,
+    }),
+  });
+
+  if (!response.ok) {
+    return Promise.reject();
+  }
+
+  const data = await response.json();
+
+  return data as ApiResponse<undefined>;
+};

@@ -193,10 +193,9 @@ def issueBook(request):
         total_fee = 0
         if transactions.exists():
             for transaction in transactions:
-                issue_date_aware = transaction.issue_date.astimezone()
+                issue_date = transaction.issue_date.astimezone()
                 fee = (
-                    (datetime.now(tz=issue_date_aware.tzinfo) - issue_date_aware).days
-                    + 1
+                    (datetime.now(tz=issue_date.tzinfo) - issue_date).days + 1
                 ) * transaction.book.rent_fee
                 total_fee += fee
 
@@ -230,6 +229,37 @@ def issueBook(request):
             status=status.HTTP_400_BAD_REQUEST,
         )
 
+    except Exception as e:
+        return Response(
+            {"success": False, "error": str(e)},
+            status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+        )
+
+
+@api_view(["POST"])
+def returnBook(request):
+    try:
+        transaction = get_object_or_404(
+            Transaction.objects.select_related("book").only(
+                "book__rent_fee", "issue_date"
+            ),
+            pk=request.data.get("transaction_id"),
+        )
+        transaction.status = "returned"
+        transaction.return_date = datetime.now()
+        issue_date = transaction.issue_date.astimezone()
+
+        fee_charged = (
+            (datetime.now(tz=issue_date.tzinfo) - issue_date).days + 1
+        ) * transaction.book.rent_fee
+
+        transaction.fee_charged = fee_charged
+        transaction.save()
+
+        return Response(
+            {"success": True, "message": "Book returned"},
+            status=status.HTTP_200_OK,
+        )
     except Exception as e:
         return Response(
             {"success": False, "error": str(e)},

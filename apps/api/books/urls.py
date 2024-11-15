@@ -9,4 +9,5 @@ urlpatterns = [
     ),
     path("/import", views.importBooks, name="importBooks"),
     path("/issue", views.issueBook, name="issueBook"),
+    path("/return", views.returnBook, name="returnBook"),
 ]

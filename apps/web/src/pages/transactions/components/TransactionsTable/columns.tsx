@@ -1,5 +1,6 @@
 import { useTransactionsPageState } from "../../transactions-page.state";
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -12,6 +13,17 @@ import { MoreHorizontal, PencilIcon, TrashIcon } from "lucide-react";
 import { useState } from "react";
 
 export const transactionsTableColumns: ColumnDef<Transaction>[] = [
+  {
+    id: "selectRow",
+    cell: ({ row }) => (
+      <Checkbox
+        className="rounded-lg"
+        checked={row.getIsSelected()}
+        onCheckedChange={(value) => row.toggleSelected(!!value)}
+        aria-label="Select row"
+      />
+    ),
+  },
   {
     header: "Member",
     cell: ({ row }) => {
@@ -56,6 +68,7 @@ export const transactionsTableColumns: ColumnDef<Transaction>[] = [
     ),
   },
   {
+    id: "fee_charged",
     accessorKey: "fee_charged",
     header: "Fee Charged",
     cell: ({ row }) => {

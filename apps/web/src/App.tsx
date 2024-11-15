@@ -5,7 +5,7 @@ import { Toaster } from "sonner";
 const router = createBrowserRouter([
   ...routes.map((route) => ({
     path: route.path,
-    element: route.element,
+    lazy: route.lazy,
   })),
 ]);
 

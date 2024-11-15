@@ -5,6 +5,9 @@ import {
   getBooksService,
   ImportBooksArgs,
   importBooksService,
+  IssueBookArgs,
+  issueBookService,
+  returnBookService,
   updateBookService,
 } from "@/services/books.services";
 import { AsyncState, Book } from "@/types";
@@ -18,7 +21,10 @@ interface BooksState {
     deleteBookAsyncState: AsyncState;
     importBooksAsyncState: AsyncState;
     updateBookAsyncState: AsyncState;
+    issueBookAsyncState: AsyncState;
+    returnBookAsyncState: AsyncState;
   };
+  issueBookAsyncErrMessage?: string;
 }
 
 interface BooksActions {
@@ -27,6 +33,9 @@ interface BooksActions {
   deleteBook: (id: number) => Promise<void>;
   importBooks: (args: ImportBooksArgs) => Promise<void>;
   updateBook: (id: number, book: Partial<Book>) => Promise<void>;
+  returnBook: (transactionId: number) => Promise<void>;
+  issueBook: (args: IssueBookArgs) => Promise<void>;
+  setIssueBookAsyncErrMessage: (issueBookAsyncErrMessage: string) => void;
 }
 
 export type BooksStore = BooksState & BooksActions;
@@ -39,6 +48,8 @@ export const booksStore = createStore<BooksStore>((set, get) => ({
     deleteBookAsyncState: AsyncState.Idle,
     importBooksAsyncState: AsyncState.Idle,
     updateBookAsyncState: AsyncState.Idle,
+    returnBookAsyncState: AsyncState.Idle,
+    issueBookAsyncState: AsyncState.Idle,
   },
   fetchBooks: async (args) => {
     set((state) => ({
@@ -195,6 +206,69 @@ export const booksStore = createStore<BooksStore>((set, get) => ({
       asyncStates: {
         ...state.asyncStates,
         updateBookAsyncState: AsyncState.Success,
+      },
+    }));
+  },
+  returnBook: async (transactionId) => {
+    set((state) => ({
+      asyncStates: {
+        ...state.asyncStates,
+        returnBookAsyncState: AsyncState.Pending,
+      },
+    }));
+
+    const isBookReturned = await returnBookService(transactionId)
+      .then((res) => res)
+      .catch(() => null);
+
+    if (!isBookReturned) {
+      set((state) => ({
+        asyncStates: {
+          ...state.asyncStates,
+          returnBookAsyncState: AsyncState.Error,
+        },
+      }));
+      return Promise.reject();
+    }
+
+    set((state) => ({
+      asyncStates: {
+        ...state.asyncStates,
+        returnBookAsyncState: AsyncState.Success,
+      },
+    }));
+  },
+  setIssueBookAsyncErrMessage: (issueBookAsyncErrMessage: string) => {
+    set({ issueBookAsyncErrMessage });
+  },
+  issueBook: async (args) => {
+    set((state) => ({
+      asyncStates: {
+        ...state.asyncStates,
+        issueBookAsyncState: AsyncState.Pending,
+      },
+    }));
+
+    const isBookIssued = await issueBookService(args)
+      .then((res) => res)
+      .catch((er: number) => er);
+
+    if (typeof isBookIssued === "number" && isBookIssued == 406) {
+      set((state) => ({
+        asyncStates: {
+          ...state.asyncStates,
+          issueBookAsyncState: AsyncState.Error,
+        },
+        issueBookAsyncErrMessage:
+          "Member's pending fee exceeds the Rs. 500 limit",
+      }));
+      return Promise.reject();
+    }
+
+    set((state) => ({
+      asyncStates: {
+        ...state.asyncStates,
+        issueBookAsyncState: AsyncState.Success,
       },
     }));
   },
