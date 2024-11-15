@@ -74,7 +74,6 @@ export const AddBookModal = () => {
     try {
       await createBook({
         ...values,
-        id: 0,
         publication_date: values.publication_date.toISOString(),
       });
       form.reset();

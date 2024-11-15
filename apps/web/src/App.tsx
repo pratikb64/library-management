@@ -1,6 +1,6 @@
-import { Toaster } from "./components/ui/sonner";
 import { routes } from "./routes";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { Toaster } from "sonner";
 
 const router = createBrowserRouter([
   ...routes.map((route) => ({

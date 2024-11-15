@@ -32,7 +32,7 @@ export const getBooksService = async (args?: GetBooksArgs) => {
   return data as ApiPaginatedResponse<Book[]>;
 };
 
-export const createBookService = async (book: Book) => {
+export const createBookService = async (book: Omit<Book, "id">) => {
   const response = await fetch(`${BACKEND_URL}/api/books`, {
     method: "POST",
     headers: {
@@ -111,4 +111,27 @@ export const updateBookService = async (args: UpdateBookArgs) => {
   const data = await response.json();
 
   return data as ApiResponse<Book>;
+};
+
+export interface IssueBookArgs {
+  book_id: number;
+  member_id: number;
+}
+
+export const issueBookService = async (args: IssueBookArgs) => {
+  const response = await fetch(`${BACKEND_URL}/api/books/issue`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(args),
+  });
+
+  if (!response.ok) {
+    return Promise.reject(response.status);
+  }
+
+  const data = await response.json();
+
+  return data as ApiResponse<undefined>;
 };

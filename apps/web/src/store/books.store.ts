@@ -23,7 +23,7 @@ interface BooksState {
 
 interface BooksActions {
   fetchBooks: (args?: GetBooksArgs) => Promise<void>;
-  createBook: (book: Book) => Promise<void>;
+  createBook: (book: Omit<Book, "id">) => Promise<void>;
   deleteBook: (id: number) => Promise<void>;
   importBooks: (args: ImportBooksArgs) => Promise<void>;
   updateBook: (id: number, book: Partial<Book>) => Promise<void>;

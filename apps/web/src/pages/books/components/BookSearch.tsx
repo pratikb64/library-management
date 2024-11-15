@@ -53,7 +53,7 @@ export const BookSearch = () => {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)}>
-        <div className="flex flex-col items-center gap-2 py-4 sm:flex-row">
+        <div className="mb-4 flex flex-col items-center gap-2 sm:flex-row">
           <FormField
             control={form.control}
             name="title"

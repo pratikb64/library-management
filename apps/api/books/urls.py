@@ -8,4 +8,5 @@ urlpatterns = [
         "/<int:pk>", views.getUpdateDeleteBookDetails, name="getUpdateDeleteBookDetails"
     ),
     path("/import", views.importBooks, name="importBooks"),
+    path("/issue", views.issueBook, name="issueBook"),
 ]

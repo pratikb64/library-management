@@ -22,6 +22,21 @@ export interface Member {
   joining_date: string;
 }
 
+export enum TransactionStatus {
+  ISSUED = "issued",
+  RETURNED = "returned",
+}
+
+export interface Transaction {
+  id: number;
+  book: Book;
+  member: Member;
+  issue_date: string;
+  return_date: string | null;
+  status: TransactionStatus;
+  fee_charged: number;
+}
+
 //
 export enum AsyncState {
   Idle = "idle",
