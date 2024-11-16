@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     "books",
     "members",
     "transactions",
+    "stats",
 ]
 
 MIDDLEWARE = [

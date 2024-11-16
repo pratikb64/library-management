@@ -37,6 +37,25 @@ export interface Transaction {
   fee_charged: number;
 }
 
+export interface RecentTransaction {
+  id: number;
+  book: string;
+  member: {
+    name: string;
+    email: string;
+  };
+  status: TransactionStatus;
+}
+
+export interface Stats {
+  books_count: number;
+  members_count: number;
+  issued_books_count: number;
+  fee_collected_last_30_days: number;
+  recently_joined_members: Member[];
+  recent_transactions: RecentTransaction[];
+}
+
 //
 export enum AsyncState {
   Idle = "idle",
