@@ -48,12 +48,16 @@ export const membersTableColumns: ColumnDef<Member>[] = [
     accessorKey: "email",
     header: "Email",
     cell: ({ row }) => (
-      <div className="w-40 overflow-hidden text-ellipsis whitespace-nowrap">
+      <div
+        className="w-40 overflow-hidden text-ellipsis whitespace-nowrap"
+        title={row.getValue("email")}
+      >
         {row.getValue("email")}
       </div>
     ),
   },
   {
+    id: "joining_date",
     accessorKey: "joining_date",
     header: "Joining Date",
     cell: ({ row }) => (

@@ -26,12 +26,12 @@ export const StatCards = () => {
     {
       title: "Fee Collected in last 30 days",
       icon: <IndianRupeeIcon className="size-4 text-muted-foreground" />,
-      value: `₹${stats?.fee_collected_last_30_days}`,
+      value: `₹${stats?.fee_collected_last_30_days ?? 0}`,
     },
   ];
 
   return (
-    <div className="mt-4 flex w-full gap-4">
+    <div className="mt-4 flex w-full flex-col gap-4 md:flex-row">
       {asyncStates.fetchStatsAsyncState === AsyncState.Pending && (
         <div className="flex w-full gap-4">
           {statsCards.map((_, i) => (

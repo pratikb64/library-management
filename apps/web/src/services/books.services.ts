@@ -127,11 +127,11 @@ export const issueBookService = async (args: IssueBookArgs) => {
     body: JSON.stringify(args),
   });
 
-  if (!response.ok) {
-    return Promise.reject(response.status);
-  }
-
   const data = await response.json();
+
+  if (!response.ok) {
+    return Promise.reject(data);
+  }
 
   return data as ApiResponse<undefined>;
 };

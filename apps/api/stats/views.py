@@ -14,8 +14,9 @@ def getStats(request):
     members_count = Member.objects.count()
     issued_books_count = Transaction.objects.filter(status="issued").count()
     recent_transactions = Transaction.objects.select_related("book", "member").order_by(
-        "-issue_date"
+        "-updated_at",
     )[:8]
+
     thirty_days_ago = datetime.now() - timedelta(days=30)
 
     recent_transactions_data = [

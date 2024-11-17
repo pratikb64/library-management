@@ -160,6 +160,7 @@ def importBooks(request):
                             book.get("publication_date"), "%m/%d/%Y"
                         ).strftime("%Y-%m-%d"),
                         publisher=book.get("publisher"),
+                        quantity=3,
                     )
                     for book in books
                 ],
@@ -184,6 +185,14 @@ def importBooks(request):
 def issueBook(request):
     try:
         book = get_object_or_404(Book, pk=request.data.get("book_id"))
+        issued_count = Transaction.objects.filter(book=book, status="issued").count()
+
+        if issued_count >= book.quantity:
+            return Response(
+                {"success": False, "error": "Book is out of stock"},
+                status=status.HTTP_406_NOT_ACCEPTABLE,
+            )
+
         member = get_object_or_404(Member, pk=request.data.get("member_id"))
         transactions = (
             Transaction.objects.filter(member=member, status="issued")
@@ -254,6 +263,7 @@ def returnBook(request):
         ) * transaction.book.rent_fee
 
         transaction.fee_charged = fee_charged
+        transaction.updated_at = datetime.now()
         transaction.save()
 
         return Response(

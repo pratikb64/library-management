@@ -36,7 +36,10 @@ export const transactionsTableColumns: ColumnDef<Transaction>[] = [
     header: "Book",
     cell: ({ row }) => {
       return (
-        <div className="w-48 overflow-hidden text-ellipsis whitespace-nowrap">
+        <div
+          className="w-48 overflow-hidden text-ellipsis whitespace-nowrap"
+          title={row.original.book.title}
+        >
           {row.original.book.title}
         </div>
       );

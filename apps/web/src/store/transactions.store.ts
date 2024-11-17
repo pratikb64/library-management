@@ -24,7 +24,7 @@ interface TransactionsActions {
   deleteTransaction: (id: number) => Promise<void>;
   updateTransaction: (
     id: number,
-    transaction: Partial<Omit<Transaction, "book" | "member" | "issue_date">>,
+    transaction: Partial<Omit<Transaction, "book" | "member">>,
   ) => Promise<void>;
 }
 

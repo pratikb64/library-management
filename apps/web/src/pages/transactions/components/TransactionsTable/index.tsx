@@ -1,6 +1,7 @@
 import { TransactionSearch } from "../TransactionSearch";
 import { transactionsTableColumns } from "./columns";
 import { AppTable } from "@/components/AppTable";
+import { GetTransactionsArgs } from "@/services/transactions.services";
 import { useTransactionsStore } from "@/store/transactions.store";
 import { AsyncState } from "@/types";
 import { Table } from "@tanstack/react-table";
@@ -12,6 +13,7 @@ interface Props {
   columnVisibility?: Record<string, boolean>;
   showPagination?: boolean;
   setTableInstance?: (table: Table<any> | undefined) => void;
+  fetchTransactionsQuery?: GetTransactionsArgs;
 }
 
 export const TransactionsTable = (props: Props) => {
@@ -19,7 +21,7 @@ export const TransactionsTable = (props: Props) => {
     useTransactionsStore();
 
   useEffect(() => {
-    fetchTransactions().catch(() => {
+    fetchTransactions(props.fetchTransactionsQuery).catch(() => {
       toast.error("Something went wrong, try again later!");
     });
   }, []);

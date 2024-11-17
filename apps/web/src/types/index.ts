@@ -12,6 +12,7 @@ export interface Book {
   publication_date: string;
   publisher: string;
   rent_fee: number;
+  quantity: number;
 }
 
 export interface Member {

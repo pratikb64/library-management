@@ -45,6 +45,7 @@ const addBookFormSchema = z.object({
   publication_date: z.date(),
   publisher: z.string().min(2).max(500),
   rent_fee: z.preprocess((val) => Number(val), z.number()),
+  quantity: z.preprocess((val) => Number(val), z.number()),
 });
 
 export const AddBookModal = () => {
@@ -66,6 +67,7 @@ export const AddBookModal = () => {
       publication_date: new Date(),
       publisher: "",
       rent_fee: 0,
+      quantity: 0,
     },
   });
 
@@ -251,7 +253,7 @@ export const AddBookModal = () => {
                   )}
                 />
               </div>
-              <div className="grid sm:grid-cols-3 sm:gap-4">
+              <div className="grid grid-cols-2 gap-4">
                 <FormField
                   control={form.control}
                   name="average_rating"
@@ -265,29 +267,40 @@ export const AddBookModal = () => {
                     </FormItem>
                   )}
                 />
-                <div className="mt-4 sm:mt-0">
-                  <FormField
-                    control={form.control}
-                    name="ratings_count"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Ratings count</FormLabel>
-                        <FormControl>
-                          <Input type="number" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
-
-                <br className="-mt-4 block sm:hidden" />
+                <FormField
+                  control={form.control}
+                  name="ratings_count"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Ratings count</FormLabel>
+                      <FormControl>
+                        <Input type="number" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+              <div className="grid grid-cols-2 gap-4">
                 <FormField
                   control={form.control}
                   name="text_reviews_count"
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Text reviews count</FormLabel>
+                      <FormControl>
+                        <Input type="number" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="quantity"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Quantity</FormLabel>
                       <FormControl>
                         <Input type="number" {...field} />
                       </FormControl>

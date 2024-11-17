@@ -1,5 +1,10 @@
 import { BACKEND_URL } from "@/env";
-import { ApiPaginatedResponse, ApiResponse, Transaction } from "@/types";
+import {
+  ApiPaginatedResponse,
+  ApiResponse,
+  Transaction,
+  TransactionStatus,
+} from "@/types";
 
 export interface GetTransactionsArgs {
   member_first_name?: string;
@@ -7,6 +12,7 @@ export interface GetTransactionsArgs {
   member_id?: number;
   book_title?: string;
   book_id?: number;
+  status?: TransactionStatus;
   limit?: number;
   page?: number;
 }
@@ -23,6 +29,7 @@ export const getTransactionsService = async (args?: GetTransactionsArgs) => {
   if (args?.book_title) url.searchParams.set("book_title", args.book_title);
   if (args?.book_id) url.searchParams.set("book_id", String(args.book_id));
   if (args?.page) url.searchParams.set("page", String(args.page));
+  if (args?.status) url.searchParams.set("status", args.status);
 
   url.searchParams.set("limit", String(args?.limit || 50));
 

@@ -32,13 +32,22 @@ export const RecentTransactions = () => {
         {asyncStates.fetchStatsAsyncState === AsyncState.Success &&
           stats?.recent_transactions.map((transaction) => (
             <div className="flex justify-between" key={transaction.id}>
-              <div className="w-36 space-y-1 overflow-hidden text-ellipsis whitespace-nowrap text-sm font-medium">
+              <div
+                className="w-36 space-y-1 overflow-hidden text-ellipsis whitespace-nowrap text-sm font-medium"
+                title={transaction.member.name}
+              >
                 {transaction.member.name}
-                <p className="text-sm text-muted-foreground">
+                <p
+                  className="text-sm text-muted-foreground"
+                  title={transaction.member.email}
+                >
                   {transaction.member.email}
                 </p>
               </div>
-              <div className="w-48 space-y-1 overflow-hidden text-ellipsis whitespace-nowrap text-sm font-medium">
+              <div
+                className="w-48 space-y-1 overflow-hidden text-ellipsis whitespace-nowrap text-sm font-medium"
+                title={transaction.book}
+              >
                 {transaction.book}
               </div>
               <div className="w-1/5 font-medium capitalize">

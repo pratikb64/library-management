@@ -101,7 +101,7 @@ export const IssueBookModal = () => {
             </div>
           </div>
         </div>
-        <div className="mt-4 text-sm text-red-500">
+        <div className="text-sm text-red-500">
           {asyncStates.issueBookAsyncState === AsyncState.Error &&
             issueBookAsyncErrMessage}
         </div>

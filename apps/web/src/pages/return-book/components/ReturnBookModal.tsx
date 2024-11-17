@@ -11,6 +11,7 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { useBooksStore } from "@/store/books.store";
 import { useTransactionsStore } from "@/store/transactions.store";
+import { TransactionStatus } from "@/types";
 import { useCallback } from "react";
 import { toast } from "sonner";
 
@@ -42,7 +43,7 @@ export const ReturnBookModal = () => {
       setIsReturnBookModalOpen(false);
 
       toast.success("Book returned successfully", { id: loadingToastId });
-      await fetchTransactions();
+      await fetchTransactions({ status: TransactionStatus.ISSUED });
     } catch (error) {
       toast.error("Something went wrong", { id: loadingToastId });
     }

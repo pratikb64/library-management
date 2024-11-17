@@ -25,6 +25,7 @@ class Book(models.Model):
     rent_fee = models.FloatField()
     publication_date = models.CharField(max_length=100)
     publisher = models.CharField(max_length=1000)
+    quantity = models.IntegerField(default=0)
 
     def __str__(self):
         return self.title

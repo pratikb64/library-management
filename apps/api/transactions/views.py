@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from django.shortcuts import get_object_or_404
 from rest_framework import status
 from rest_framework.decorators import api_view
@@ -32,6 +34,9 @@ def getAndCreateTransactions(request):
 
         if "book_id" in request.GET:
             transactions = transactions.filter(book__id=request.GET["book_id"])
+
+        if "status" in request.GET:
+            transactions = transactions.filter(status=request.GET["status"])
 
         limit = min(int(request.GET.get("limit", 20)), 100)
         page = int(request.GET.get("page", 1))
@@ -79,11 +84,16 @@ def getUpdateDeleteTransactionDetails(request, pk):
             )
 
         if request.method == "PATCH":
+            data = request.data
+            # need this extra step as default django date is not compatible with js date
+            data["issue_date"] = datetime.strptime(
+                request.data.get("issue_date"), "%m/%d/%Y"
+            )
             serializer = TransactionSerializer(
-                instance=transaction, data=request.data, partial=True
+                instance=transaction, data=data, partial=True
             )
             if serializer.is_valid():
-                serializer.save()
+                serializer.save(**data)
                 return Response(
                     {
                         "success": True,

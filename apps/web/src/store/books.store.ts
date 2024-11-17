@@ -10,7 +10,7 @@ import {
   returnBookService,
   updateBookService,
 } from "@/services/books.services";
-import { AsyncState, Book } from "@/types";
+import { ApiResponse, AsyncState, Book } from "@/types";
 import { createStore, useStore } from "zustand";
 
 interface BooksState {
@@ -251,16 +251,15 @@ export const booksStore = createStore<BooksStore>((set, get) => ({
 
     const isBookIssued = await issueBookService(args)
       .then((res) => res)
-      .catch((er: number) => er);
+      .catch((er: ApiResponse<undefined>) => er);
 
-    if (typeof isBookIssued === "number" && isBookIssued == 406) {
+    if (!isBookIssued.success) {
       set((state) => ({
         asyncStates: {
           ...state.asyncStates,
           issueBookAsyncState: AsyncState.Error,
         },
-        issueBookAsyncErrMessage:
-          "Member's pending fee exceeds the Rs. 500 limit",
+        issueBookAsyncErrMessage: isBookIssued.error,
       }));
       return Promise.reject();
     }

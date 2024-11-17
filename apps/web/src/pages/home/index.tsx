@@ -20,7 +20,7 @@ export const HomePage = () => {
       <div>
         <div className="text-xl font-semibold">Dashboard</div>
         <StatCards />
-        <div className="mt-4 flex w-full gap-4">
+        <div className="mt-4 flex w-full flex-col gap-4 lg:flex-row">
           <RecentMembers />
           <RecentTransactions />
         </div>

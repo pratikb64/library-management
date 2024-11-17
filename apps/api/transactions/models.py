@@ -26,6 +26,7 @@ class Transaction(models.Model):
     fee_charged = models.FloatField(default=0)
     book = models.ForeignKey(Book, on_delete=models.CASCADE)
     member = models.ForeignKey(Member, on_delete=models.CASCADE)
+    updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         if self.status == self.Status.ISSUE:

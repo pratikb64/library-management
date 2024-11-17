@@ -45,7 +45,7 @@ const editTransactionFormSchema = z.object({
   issue_date: z.date(),
   return_date: z.date().optional(),
   status: z.nativeEnum(TransactionStatus),
-  fee_charged: z.preprocess((val) => Number(val), z.number()),
+  fee_charged: z.preprocess((val) => Number(val), z.number()).optional(),
 });
 
 export const EditTransactionModal = () => {
@@ -56,7 +56,7 @@ export const EditTransactionModal = () => {
   const form = useForm<z.infer<typeof editTransactionFormSchema>>({
     resolver: zodResolver(editTransactionFormSchema),
     defaultValues: {
-      fee_charged: "" as unknown as number,
+      fee_charged: editTransactionData?.transaction?.fee_charged,
       issue_date: new Date(
         editTransactionData?.transaction?.issue_date || new Date(),
       ),
@@ -79,6 +79,7 @@ export const EditTransactionModal = () => {
 
     try {
       await updateTransaction(editTransactionData.transaction.id, {
+        issue_date: format(values.issue_date, "MM/dd/yyyy"),
         return_date: values.return_date
           ? format(values.return_date, "yyyy-MM-dd")
           : null,
@@ -163,7 +164,11 @@ export const EditTransactionModal = () => {
                       </FormControl>
                     </PopoverTrigger>
                     <PopoverContent className="w-auto p-0" align="start">
-                      <Calendar mode="single" selected={field.value} disabled />
+                      <Calendar
+                        mode="single"
+                        selected={field.value}
+                        onSelect={field.onChange}
+                      />
                     </PopoverContent>
                   </Popover>
                   <FormMessage />

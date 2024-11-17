@@ -3,6 +3,7 @@ import { ReturnBookModal } from "./components/ReturnBookModal";
 import { useReturnBooksPageState } from "./return-book-page.state";
 import { AppLayout } from "@/components/app-layout";
 import { Button } from "@/components/ui/button";
+import { TransactionStatus } from "@/types";
 import { toast } from "sonner";
 
 export const ReturnBookPage = () => {
@@ -31,10 +32,11 @@ export const ReturnBookPage = () => {
       </div>
       <div>
         <TransactionsTable
-          pageSize={5}
+          pageSize={25}
           columnVisibility={{ actions: false, fee_charged: false }}
-          showPagination={false}
+          showPagination={true}
           setTableInstance={setTransactionTableInstance}
+          fetchTransactionsQuery={{ status: TransactionStatus.ISSUED }}
         />
       </div>
       <ReturnBookModal />

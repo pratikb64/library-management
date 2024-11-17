@@ -30,25 +30,36 @@ export const RecentMembers = () => {
             ))}
 
           {asyncStates.fetchStatsAsyncState === AsyncState.Success &&
-            stats?.recently_joined_members.map((member) => (
-              <div className="flex items-center" key={member.id}>
-                <Avatar className="h-9 w-9">
-                  <AvatarImage
-                    src={`https://avatar.iran.liara.run/public?username=${member.first_name + member.last_name}`}
-                    alt="Avatar"
-                  />
-                </Avatar>
-                <div className="ml-4 space-y-1">
-                  <p className="text-sm font-medium leading-none">{`${member.first_name} ${member.last_name}`}</p>
-                  <p className="text-sm text-muted-foreground">
-                    {member.email}
-                  </p>
+            stats?.recently_joined_members.map((member) => {
+              const memberName = `${member.first_name} ${member.last_name}`;
+              return (
+                <div className="flex items-center" key={member.id}>
+                  <Avatar className="h-9 w-9">
+                    <AvatarImage
+                      src={`https://avatar.iran.liara.run/public?username=${memberName}`}
+                      alt="Avatar"
+                    />
+                  </Avatar>
+                  <div className="ml-4 space-y-1">
+                    <p
+                      className="text-sm font-medium leading-none"
+                      title={memberName}
+                    >
+                      {memberName}
+                    </p>
+                    <p
+                      className="text-sm text-muted-foreground"
+                      title={member.email}
+                    >
+                      {member.email}
+                    </p>
+                  </div>
+                  <div className="ml-auto text-sm font-medium">
+                    {new Date(member.joining_date).toLocaleDateString()}
+                  </div>
                 </div>
-                <div className="ml-auto text-sm font-medium">
-                  {new Date(member.joining_date).toLocaleDateString()}
-                </div>
-              </div>
-            ))}
+              );
+            })}
         </div>
       </CardContent>
     </Card>

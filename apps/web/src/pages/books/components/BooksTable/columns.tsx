@@ -19,7 +19,10 @@ export const booksTableColumns: ColumnDef<Book>[] = [
     accessorKey: "title",
     header: "Title",
     cell: ({ row }) => (
-      <div className="w-40 overflow-hidden text-ellipsis whitespace-nowrap">
+      <div
+        className="w-40 overflow-hidden text-ellipsis whitespace-nowrap"
+        title={row.getValue("title")}
+      >
         {row.getValue("title")}
       </div>
     ),
@@ -28,22 +31,28 @@ export const booksTableColumns: ColumnDef<Book>[] = [
     accessorKey: "authors",
     header: "Authors",
     cell: ({ row }) => (
-      <div className="w-40 overflow-hidden text-ellipsis whitespace-nowrap">
+      <div
+        className="w-40 overflow-hidden text-ellipsis whitespace-nowrap"
+        title={row.getValue("authors")}
+      >
         {row.getValue("authors")}
       </div>
     ),
   },
   {
+    id: "average_rating",
     accessorKey: "average_rating",
     header: "Average Rating",
     cell: ({ row }) => <div>{row.getValue("average_rating")}</div>,
   },
   {
+    id: "language_code",
     accessorKey: "language_code",
     header: "Language Code",
     cell: ({ row }) => <div>{row.getValue("language_code")}</div>,
   },
   {
+    id: "publication_date",
     accessorKey: "publication_date",
     header: "Publication Date",
     cell: ({ row }) => (
@@ -53,6 +62,7 @@ export const booksTableColumns: ColumnDef<Book>[] = [
     ),
   },
   {
+    id: "rent_fee",
     accessorKey: "rent_fee",
     header: "Rent Fee / Day",
     cell: ({ row }) => {
@@ -65,6 +75,12 @@ export const booksTableColumns: ColumnDef<Book>[] = [
 
       return <div>{formatted}</div>;
     },
+  },
+  {
+    id: "quantity",
+    accessorKey: "quantity",
+    header: "Quantity",
+    cell: ({ row }) => <div>{row.getValue("quantity")}</div>,
   },
   {
     id: "actions",
