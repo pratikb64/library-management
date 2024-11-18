@@ -25,6 +25,7 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/utils";
 import { useBooksStore } from "@/store/books.store";
+import { AsyncState } from "@/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { format } from "date-fns";
 import { CalendarIcon } from "lucide-react";
@@ -50,7 +51,7 @@ const addBookFormSchema = z.object({
 
 export const AddBookModal = () => {
   const { isAddBookModalOpen, setIsAddBookModalOpen } = useBooksPageState();
-  const { createBook } = useBooksStore();
+  const { createBook, asyncStates } = useBooksStore();
 
   const form = useForm<z.infer<typeof addBookFormSchema>>({
     resolver: zodResolver(addBookFormSchema),
@@ -86,8 +87,13 @@ export const AddBookModal = () => {
     }
   };
 
+  const onOpenChange = (isOpen: boolean) => {
+    if (asyncStates.createBookAsyncState === AsyncState.Pending) return;
+    setIsAddBookModalOpen(isOpen);
+  };
+
   return (
-    <Dialog open={isAddBookModalOpen} onOpenChange={setIsAddBookModalOpen}>
+    <Dialog open={isAddBookModalOpen} onOpenChange={onOpenChange}>
       <DialogContent
         className="max-h-screen overflow-auto md:max-w-[600px]"
         onInteractOutside={(e) => e.preventDefault()}
@@ -310,13 +316,21 @@ export const AddBookModal = () => {
                 />
               </div>
               <DialogFooter className="flex flex-col gap-2 sm:flex-row">
-                <Button type="submit" disabled={form.formState.isSubmitting}>
+                <Button
+                  type="submit"
+                  disabled={
+                    asyncStates.createBookAsyncState === AsyncState.Pending
+                  }
+                >
                   Submit
                 </Button>
                 <Button
                   type="reset"
                   variant="outline"
                   onClick={() => form.reset()}
+                  disabled={
+                    asyncStates.createBookAsyncState === AsyncState.Pending
+                  }
                 >
                   Reset
                 </Button>

@@ -28,7 +28,7 @@ export const BooksTable = (props: Props) => {
       columns={booksTableColumns}
       data={books}
       pageSize={props.pageSize || 12}
-      isDataFetching={asyncStates.fetchBooksAsyncState !== AsyncState.Success}
+      isDataFetching={asyncStates.fetchBooksAsyncState === AsyncState.Pending}
       isDataFetchingFailed={
         asyncStates.fetchBooksAsyncState === AsyncState.Error
       }

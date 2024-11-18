@@ -33,7 +33,7 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/utils";
 import { useTransactionsStore } from "@/store/transactions.store";
-import { TransactionStatus } from "@/types";
+import { AsyncState, TransactionStatus } from "@/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { format } from "date-fns";
 import { CalendarIcon } from "lucide-react";
@@ -51,7 +51,7 @@ const editTransactionFormSchema = z.object({
 export const EditTransactionModal = () => {
   const { editTransactionData, setEditTransactionModalData } =
     useTransactionsPageState();
-  const { updateTransaction } = useTransactionsStore();
+  const { updateTransaction, asyncStates } = useTransactionsStore();
 
   const form = useForm<z.infer<typeof editTransactionFormSchema>>({
     resolver: zodResolver(editTransactionFormSchema),
@@ -97,16 +97,19 @@ export const EditTransactionModal = () => {
     }
   };
 
+  const onOpenChange = (isOpen: boolean) => {
+    if (asyncStates.updateTransactionAsyncState === AsyncState.Pending) return;
+    setEditTransactionModalData({
+      isEditTransactionModalOpen: isOpen,
+      transaction: undefined,
+    });
+    form.reset();
+  };
+
   return (
     <Dialog
       open={editTransactionData?.isEditTransactionModalOpen}
-      onOpenChange={(open) => {
-        setEditTransactionModalData({
-          isEditTransactionModalOpen: open,
-          transaction: undefined,
-        });
-        form.reset();
-      }}
+      onOpenChange={onOpenChange}
     >
       <DialogContent
         className="max-h-screen overflow-auto md:max-w-sm"
@@ -262,14 +265,23 @@ export const EditTransactionModal = () => {
             />
 
             <DialogFooter className="flex flex-col gap-2 sm:flex-row">
-              <Button type="submit" disabled={!form.formState.isDirty}>
+              <Button
+                type="submit"
+                disabled={
+                  !form.formState.isDirty ||
+                  asyncStates.updateTransactionAsyncState === AsyncState.Pending
+                }
+              >
                 Save changes
               </Button>
               <Button
                 type="reset"
                 variant="outline"
                 onClick={() => form.reset()}
-                disabled={!form.formState.isDirty}
+                disabled={
+                  !form.formState.isDirty ||
+                  asyncStates.updateTransactionAsyncState === AsyncState.Pending
+                }
               >
                 Reset changes
               </Button>

@@ -57,13 +57,14 @@ export const IssueBookModal = () => {
     }
   }, [memberTableInstance, bookTableInstance, issueBook]);
 
-  const onClose = () => {
+  const onOpenChange = (isOpen: boolean) => {
+    if (asyncStates.issueBookAsyncState === AsyncState.Pending) return;
     setIssueBookAsyncErrMessage("");
-    setIsIssueBookModalOpen(false);
+    setIsIssueBookModalOpen(isOpen);
   };
 
   return (
-    <Dialog open={isIssueBookModalOpen} onOpenChange={setIsIssueBookModalOpen}>
+    <Dialog open={isIssueBookModalOpen} onOpenChange={onOpenChange}>
       <DialogContent
         className="max-h-screen overflow-auto md:max-w-sm"
         onInteractOutside={(e) => e.preventDefault()}
@@ -107,8 +108,17 @@ export const IssueBookModal = () => {
         </div>
         <DialogFooter>
           <div className="flex gap-2">
-            <Button onClick={onIssueBookClick}>Issue Book</Button>
-            <Button onClick={onClose} variant={"outline"}>
+            <Button
+              onClick={onIssueBookClick}
+              disabled={asyncStates.issueBookAsyncState === AsyncState.Pending}
+            >
+              Issue Book
+            </Button>
+            <Button
+              onClick={() => onOpenChange(false)}
+              variant={"outline"}
+              disabled={asyncStates.issueBookAsyncState === AsyncState.Pending}
+            >
               Cancel
             </Button>
           </div>

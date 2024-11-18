@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { useTransactionsStore } from "@/store/transactions.store";
+import { AsyncState } from "@/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ResetIcon } from "@radix-ui/react-icons";
 import { SearchIcon } from "lucide-react";
@@ -30,7 +31,7 @@ const searchFormSchema = z.object({
 });
 
 export const TransactionSearch = () => {
-  const { fetchTransactions } = useTransactionsStore();
+  const { fetchTransactions, asyncStates } = useTransactionsStore();
   const [isMemberFilterOpen, setIsMemberFilterOpen] = useState(false);
   const [isBookFilterOpen, setIsBookFilterOpen] = useState(false);
 
@@ -45,7 +46,7 @@ export const TransactionSearch = () => {
     },
   });
 
-  const onSubmit = (values: z.infer<typeof searchFormSchema>) => {
+  const onSubmit = async (values: z.infer<typeof searchFormSchema>) => {
     if (
       !values.member_first_name &&
       !values.member_last_name &&
@@ -61,7 +62,7 @@ export const TransactionSearch = () => {
       return;
     }
     try {
-      fetchTransactions(values);
+      await fetchTransactions(values);
     } catch (error) {
       toast.error("Something went wrong");
     }
@@ -200,7 +201,12 @@ export const TransactionSearch = () => {
               </div>
             </DropdownMenuContent>
           </DropdownMenu>
-          <Button className="w-full sm:w-max">
+          <Button
+            className="w-full sm:w-max"
+            disabled={
+              asyncStates.fetchTransactionsAsyncState === AsyncState.Pending
+            }
+          >
             <SearchIcon className="size-5" />
             <span className="sr-only">Search</span>
           </Button>
@@ -211,6 +217,9 @@ export const TransactionSearch = () => {
               variant={"ghost"}
               size={"sm"}
               onClick={onReset}
+              disabled={
+                asyncStates.fetchTransactionsAsyncState === AsyncState.Pending
+              }
             >
               <ResetIcon className="size-2" />
               <span>Reset search</span>

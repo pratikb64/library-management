@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { useMembersStore } from "@/store/members.store";
+import { AsyncState } from "@/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ResetIcon } from "@radix-ui/react-icons";
 import { SearchIcon } from "lucide-react";
@@ -16,7 +17,7 @@ const searchFormSchema = z.object({
 });
 
 export const MemberSearch = () => {
-  const { fetchMembers } = useMembersStore();
+  const { fetchMembers, asyncStates } = useMembersStore();
   const form = useForm<z.infer<typeof searchFormSchema>>({
     resolver: zodResolver(searchFormSchema),
     defaultValues: {
@@ -26,7 +27,7 @@ export const MemberSearch = () => {
     },
   });
 
-  const onSubmit = (values: z.infer<typeof searchFormSchema>) => {
+  const onSubmit = async (values: z.infer<typeof searchFormSchema>) => {
     if (!values.first_name && !values.last_name && !values.email) {
       toast.error("Please enter at least one search term");
       // set error to any field to avoid showing reset button
@@ -36,7 +37,7 @@ export const MemberSearch = () => {
       return;
     }
     try {
-      fetchMembers({
+      await fetchMembers({
         first_name: values.first_name,
         last_name: values.last_name,
         email: values.email,
@@ -100,7 +101,10 @@ export const MemberSearch = () => {
               </FormItem>
             )}
           />
-          <Button className="w-full sm:w-max">
+          <Button
+            className="w-full sm:w-max"
+            disabled={asyncStates.fetchMembersAsyncState === AsyncState.Pending}
+          >
             <SearchIcon className="size-5" />
             <span className="sr-only">Search</span>
           </Button>
@@ -111,6 +115,9 @@ export const MemberSearch = () => {
               variant={"ghost"}
               size={"sm"}
               onClick={onReset}
+              disabled={
+                asyncStates.fetchMembersAsyncState === AsyncState.Pending
+              }
             >
               <ResetIcon className="size-2" />
               <span>Reset search</span>

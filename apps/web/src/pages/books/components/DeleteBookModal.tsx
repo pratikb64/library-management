@@ -9,35 +9,42 @@ import {
 } from "@/components/ui/dialog";
 import { Separator } from "@/components/ui/separator";
 import { useBooksStore } from "@/store/books.store";
+import { AsyncState } from "@/types";
 import { toast } from "sonner";
 
 export const DeleteBookModal = () => {
   const { deleteBookData, setDeleteBookModalData } = useBooksPageState();
-  const { deleteBook } = useBooksStore();
+  const { deleteBook, asyncStates } = useBooksStore();
 
-  const onDeleteBook = () => {
+  const onDeleteBook = async () => {
     if (!deleteBookData?.book?.id) return;
 
     const loadingToastId = toast.loading("Deleting book...");
+    try {
+      await deleteBook(deleteBookData.book.id);
+      setDeleteBookModalData({
+        isDeleteBookModalOpen: false,
+        book: undefined,
+      });
 
-    deleteBook(deleteBookData.book.id);
+      toast.success("Book deleted successfully", { id: loadingToastId });
+    } catch (error) {
+      toast.error("Something went wrong", { id: loadingToastId });
+    }
+  };
+
+  const onOpenChange = (isOpen: boolean) => {
+    if (asyncStates.deleteBookAsyncState === AsyncState.Pending) return;
     setDeleteBookModalData({
-      isDeleteBookModalOpen: false,
-      book: undefined,
+      isDeleteBookModalOpen: isOpen,
+      book: deleteBookData?.book,
     });
-
-    toast.success("Book deleted successfully", { id: loadingToastId });
   };
 
   return (
     <Dialog
       open={deleteBookData?.isDeleteBookModalOpen}
-      onOpenChange={(open) =>
-        setDeleteBookModalData({
-          isDeleteBookModalOpen: open,
-          book: deleteBookData?.book,
-        })
-      }
+      onOpenChange={onOpenChange}
     >
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
@@ -49,7 +56,11 @@ export const DeleteBookModal = () => {
           <b> {deleteBookData?.book?.title}</b>?
         </div>
         <DialogFooter>
-          <Button variant={"destructive"} onClick={onDeleteBook}>
+          <Button
+            variant={"destructive"}
+            onClick={onDeleteBook}
+            disabled={asyncStates.deleteBookAsyncState === AsyncState.Pending}
+          >
             Delete
           </Button>
         </DialogFooter>

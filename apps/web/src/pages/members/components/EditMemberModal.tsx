@@ -18,6 +18,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import { useMembersStore } from "@/store/members.store";
+import { AsyncState } from "@/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -31,7 +32,7 @@ const editMemberFormSchema = z.object({
 
 export const EditMemberModal = () => {
   const { editMemberData, setEditMemberModalData } = useMembersPageState();
-  const { updateMember } = useMembersStore();
+  const { updateMember, asyncStates } = useMembersStore();
 
   const form = useForm<z.infer<typeof editMemberFormSchema>>({
     resolver: zodResolver(editMemberFormSchema),
@@ -70,15 +71,18 @@ export const EditMemberModal = () => {
     }
   };
 
+  const onOpenChange = (isOpen: boolean) => {
+    if (asyncStates.updateMemberAsyncState === AsyncState.Pending) return;
+    setEditMemberModalData({
+      isEditMemberModalOpen: isOpen,
+      member: undefined,
+    });
+  };
+
   return (
     <Dialog
       open={editMemberData?.isEditMemberModalOpen}
-      onOpenChange={(open) => {
-        setEditMemberModalData({
-          isEditMemberModalOpen: open,
-          member: undefined,
-        });
-      }}
+      onOpenChange={onOpenChange}
     >
       <DialogContent
         className="max-h-screen overflow-auto md:max-w-sm"
@@ -133,14 +137,23 @@ export const EditMemberModal = () => {
               )}
             />
             <DialogFooter className="flex flex-col gap-2 sm:flex-row">
-              <Button type="submit" disabled={!form.formState.isDirty}>
+              <Button
+                type="submit"
+                disabled={
+                  !form.formState.isDirty ||
+                  asyncStates.updateMemberAsyncState === AsyncState.Pending
+                }
+              >
                 Save changes
               </Button>
               <Button
                 type="reset"
                 variant="outline"
                 onClick={() => form.reset()}
-                disabled={!form.formState.isDirty}
+                disabled={
+                  !form.formState.isDirty ||
+                  asyncStates.updateMemberAsyncState === AsyncState.Pending
+                }
               >
                 Reset changes
               </Button>

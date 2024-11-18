@@ -25,6 +25,7 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/utils";
 import { useBooksStore } from "@/store/books.store";
+import { AsyncState } from "@/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { format } from "date-fns";
 import { CalendarIcon } from "lucide-react";
@@ -50,7 +51,7 @@ const editBookFormSchema = z.object({
 
 export const EditBookModal = () => {
   const { editBookData, setEditBookModalData } = useBooksPageState();
-  const { updateBook } = useBooksStore();
+  const { updateBook, asyncStates } = useBooksStore();
   const form = useForm<z.infer<typeof editBookFormSchema>>({
     resolver: zodResolver(editBookFormSchema),
     values: {
@@ -101,15 +102,18 @@ export const EditBookModal = () => {
     }
   };
 
+  const onOpenChange = (isOpen: boolean) => {
+    if (asyncStates.updateBookAsyncState === AsyncState.Pending) return;
+    setEditBookModalData({
+      isEditBookModalOpen: isOpen,
+      book: editBookData?.book,
+    });
+  };
+
   return (
     <Dialog
       open={editBookData?.isEditBookModalOpen}
-      onOpenChange={(open) =>
-        setEditBookModalData({
-          isEditBookModalOpen: open,
-          book: editBookData?.book,
-        })
-      }
+      onOpenChange={onOpenChange}
     >
       <DialogContent
         className="max-h-screen overflow-auto md:max-w-[600px]"
@@ -332,14 +336,23 @@ export const EditBookModal = () => {
               />
             </div>
             <DialogFooter className="flex flex-col gap-2 sm:flex-row">
-              <Button type="submit" disabled={!form.formState.isDirty}>
+              <Button
+                type="submit"
+                disabled={
+                  !form.formState.isDirty ||
+                  asyncStates.updateBookAsyncState === AsyncState.Pending
+                }
+              >
                 Save changes
               </Button>
               <Button
                 type="reset"
                 variant="outline"
                 onClick={() => form.reset()}
-                disabled={!form.formState.isDirty}
+                disabled={
+                  !form.formState.isDirty ||
+                  asyncStates.updateBookAsyncState === AsyncState.Pending
+                }
               >
                 Reset changes
               </Button>

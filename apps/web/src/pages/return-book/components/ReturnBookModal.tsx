@@ -11,7 +11,7 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { useBooksStore } from "@/store/books.store";
 import { useTransactionsStore } from "@/store/transactions.store";
-import { TransactionStatus } from "@/types";
+import { AsyncState, TransactionStatus } from "@/types";
 import { useCallback } from "react";
 import { toast } from "sonner";
 
@@ -22,7 +22,7 @@ export const ReturnBookModal = () => {
     setIsReturnBookModalOpen,
   } = useReturnBooksPageState();
 
-  const { returnBook } = useBooksStore();
+  const { returnBook, asyncStates } = useBooksStore();
   const { fetchTransactions } = useTransactionsStore();
 
   const onReturnBookClick = useCallback(async () => {
@@ -34,7 +34,7 @@ export const ReturnBookModal = () => {
       return;
     }
 
-    const loadingToastId = toast.loading("Issuing book...");
+    const loadingToastId = toast.loading("Returning book...");
 
     try {
       await returnBook(selectedTransaction.id);
@@ -48,10 +48,6 @@ export const ReturnBookModal = () => {
       toast.error("Something went wrong", { id: loadingToastId });
     }
   }, [transactionTableInstance, returnBook]);
-
-  const onClose = () => {
-    setIsReturnBookModalOpen(false);
-  };
 
   const calculateBookRentFee = (
     issueDate: string,
@@ -71,11 +67,13 @@ export const ReturnBookModal = () => {
     return formatted;
   };
 
+  const onOpenChange = (isOpen: boolean) => {
+    if (asyncStates.returnBookAsyncState === AsyncState.Pending) return;
+    setIsReturnBookModalOpen(isOpen);
+  };
+
   return (
-    <Dialog
-      open={isReturnBookModalOpen}
-      onOpenChange={setIsReturnBookModalOpen}
-    >
+    <Dialog open={isReturnBookModalOpen} onOpenChange={onOpenChange}>
       <DialogContent
         className="max-h-screen overflow-auto md:max-w-sm"
         onInteractOutside={(e) => e.preventDefault()}
@@ -127,8 +125,17 @@ export const ReturnBookModal = () => {
         </div>
         <DialogFooter>
           <div className="flex gap-2">
-            <Button onClick={onReturnBookClick}>Return Book</Button>
-            <Button onClick={onClose} variant={"outline"}>
+            <Button
+              onClick={onReturnBookClick}
+              disabled={asyncStates.returnBookAsyncState === AsyncState.Pending}
+            >
+              Return Book
+            </Button>
+            <Button
+              onClick={() => onOpenChange(false)}
+              variant={"outline"}
+              disabled={asyncStates.returnBookAsyncState === AsyncState.Pending}
+            >
               Cancel
             </Button>
           </div>

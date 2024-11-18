@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { useBooksStore } from "@/store/books.store";
+import { AsyncState } from "@/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ResetIcon } from "@radix-ui/react-icons";
 import { SearchIcon } from "lucide-react";
@@ -15,7 +16,7 @@ const searchFormSchema = z.object({
 });
 
 export const BookSearch = () => {
-  const { fetchBooks } = useBooksStore();
+  const { fetchBooks, asyncStates } = useBooksStore();
 
   const form = useForm<z.infer<typeof searchFormSchema>>({
     resolver: zodResolver(searchFormSchema),
@@ -25,7 +26,7 @@ export const BookSearch = () => {
     },
   });
 
-  const onSubmit = (values: z.infer<typeof searchFormSchema>) => {
+  const onSubmit = async (values: z.infer<typeof searchFormSchema>) => {
     if (!values.title && !values.author) {
       toast.error("Please enter at least one search term");
       // set error to any field to avoid showing reset button
@@ -35,16 +36,16 @@ export const BookSearch = () => {
       return;
     }
     try {
-      fetchBooks({ title: values.title, author: values.author });
+      await fetchBooks({ title: values.title, author: values.author });
     } catch (error) {
       toast.error("Something went wrong");
     }
   };
 
-  const onReset = () => {
+  const onReset = async () => {
     form.reset();
     try {
-      fetchBooks();
+      await fetchBooks();
     } catch (error) {
       toast.error("Something went wrong");
     }
@@ -84,7 +85,10 @@ export const BookSearch = () => {
               </FormItem>
             )}
           />
-          <Button className="w-full sm:w-max">
+          <Button
+            className="w-full sm:w-max"
+            disabled={asyncStates.fetchBooksAsyncState === AsyncState.Pending}
+          >
             <SearchIcon className="size-5" />
             <span className="sr-only">Search</span>
           </Button>
@@ -95,6 +99,7 @@ export const BookSearch = () => {
               variant={"ghost"}
               size={"sm"}
               onClick={onReset}
+              disabled={asyncStates.fetchBooksAsyncState === AsyncState.Pending}
             >
               <ResetIcon className="size-2" />
               <span>Reset search</span>

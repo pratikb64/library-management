@@ -19,6 +19,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { useBooksStore } from "@/store/books.store";
+import { AsyncState } from "@/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2 } from "lucide-react";
 import { useForm } from "react-hook-form";
@@ -33,7 +34,7 @@ const importBooksFormSchema = z.object({
 export const ImportBooksModal = () => {
   const { isImportBooksModalOpen, setIsImportBooksModalOpen } =
     useBooksPageState();
-  const { importBooks } = useBooksStore();
+  const { importBooks, asyncStates } = useBooksStore();
 
   const form = useForm<z.infer<typeof importBooksFormSchema>>({
     resolver: zodResolver(importBooksFormSchema),
@@ -57,11 +58,13 @@ export const ImportBooksModal = () => {
     }
   };
 
+  const onOpenChange = (isOpen: boolean) => {
+    if (asyncStates.importBooksAsyncState === AsyncState.Pending) return;
+    setIsImportBooksModalOpen(isOpen);
+  };
+
   return (
-    <Dialog
-      open={isImportBooksModalOpen}
-      onOpenChange={setIsImportBooksModalOpen}
-    >
+    <Dialog open={isImportBooksModalOpen} onOpenChange={onOpenChange}>
       <DialogContent
         className="max-h-screen overflow-auto md:max-w-[400px]"
         onInteractOutside={(e) => e.preventDefault()}
@@ -108,10 +111,10 @@ export const ImportBooksModal = () => {
                 )}
               />
               <DialogFooter className="flex flex-col gap-2 sm:flex-row">
-                {!form.formState.isSubmitting && (
+                {asyncStates.importBooksAsyncState !== AsyncState.Pending && (
                   <Button type="submit">Submit</Button>
                 )}
-                {form.formState.isSubmitting && (
+                {asyncStates.importBooksAsyncState === AsyncState.Pending && (
                   <Button disabled>
                     <Loader2 className="animate-spin" />
                     Importing
@@ -121,7 +124,9 @@ export const ImportBooksModal = () => {
                   type="reset"
                   variant="outline"
                   onClick={() => form.reset()}
-                  disabled={form.formState.isSubmitting}
+                  disabled={
+                    asyncStates.importBooksAsyncState === AsyncState.Pending
+                  }
                 >
                   Reset
                 </Button>

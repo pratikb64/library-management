@@ -32,7 +32,7 @@ export const TransactionsTable = (props: Props) => {
       data={transactions}
       pageSize={props.pageSize || 12}
       isDataFetching={
-        asyncStates.fetchTransactionsAsyncState !== AsyncState.Success
+        asyncStates.fetchTransactionsAsyncState === AsyncState.Pending
       }
       isDataFetchingFailed={
         asyncStates.fetchTransactionsAsyncState === AsyncState.Error

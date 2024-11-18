@@ -38,7 +38,7 @@ export const RecentTransactions = () => {
               >
                 {transaction.member.name}
                 <p
-                  className="text-sm text-muted-foreground"
+                  className="overflow-hidden text-ellipsis whitespace-nowrap text-sm text-muted-foreground"
                   title={transaction.member.email}
                 >
                   {transaction.member.email}

@@ -18,6 +18,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import { useMembersStore } from "@/store/members.store";
+import { AsyncState } from "@/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -32,7 +33,7 @@ const addMemberFormSchema = z.object({
 export const AddMemberModal = () => {
   const { isAddMemberModalOpen, setIsAddMemberModalOpen } =
     useMembersPageState();
-  const { createMember } = useMembersStore();
+  const { createMember, asyncStates } = useMembersStore();
 
   const form = useForm<z.infer<typeof addMemberFormSchema>>({
     resolver: zodResolver(addMemberFormSchema),
@@ -55,8 +56,13 @@ export const AddMemberModal = () => {
     }
   };
 
+  const onOpenChange = (isOpen: boolean) => {
+    if (asyncStates.createMemberAsyncState === AsyncState.Pending) return;
+    setIsAddMemberModalOpen(isOpen);
+  };
+
   return (
-    <Dialog open={isAddMemberModalOpen} onOpenChange={setIsAddMemberModalOpen}>
+    <Dialog open={isAddMemberModalOpen} onOpenChange={onOpenChange}>
       <DialogContent
         className="max-h-screen overflow-auto md:max-w-sm"
         onInteractOutside={(e) => e.preventDefault()}
@@ -108,13 +114,21 @@ export const AddMemberModal = () => {
                 )}
               />
               <DialogFooter className="flex flex-col gap-2 sm:flex-row">
-                <Button type="submit" disabled={form.formState.isSubmitting}>
+                <Button
+                  type="submit"
+                  disabled={
+                    asyncStates.createMemberAsyncState === AsyncState.Pending
+                  }
+                >
                   Submit
                 </Button>
                 <Button
                   type="reset"
                   variant="outline"
                   onClick={() => form.reset()}
+                  disabled={
+                    asyncStates.createMemberAsyncState === AsyncState.Pending
+                  }
                 >
                   Reset
                 </Button>

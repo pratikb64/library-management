@@ -9,19 +9,20 @@ import {
 } from "@/components/ui/dialog";
 import { Separator } from "@/components/ui/separator";
 import { useMembersStore } from "@/store/members.store";
+import { AsyncState } from "@/types";
 import { toast } from "sonner";
 
 export const DeleteMemberModal = () => {
   const { deleteMemberData, setDeleteMemberModalData } = useMembersPageState();
-  const { deleteMember } = useMembersStore();
+  const { deleteMember, asyncStates } = useMembersStore();
 
-  const onDeleteMember = () => {
+  const onDeleteMember = async () => {
     if (!deleteMemberData?.member?.id) return;
 
     const loadingToastId = toast.loading("Deleting member...");
 
     try {
-      deleteMember(deleteMemberData.member.id);
+      await deleteMember(deleteMemberData.member.id);
       setDeleteMemberModalData({
         isDeleteMemberModalOpen: false,
         member: undefined,
@@ -33,15 +34,18 @@ export const DeleteMemberModal = () => {
     }
   };
 
+  const onOpenChange = (isOpen: boolean) => {
+    if (asyncStates.deleteMemberAsyncState === AsyncState.Pending) return;
+    setDeleteMemberModalData({
+      isDeleteMemberModalOpen: isOpen,
+      member: deleteMemberData?.member,
+    });
+  };
+
   return (
     <Dialog
       open={deleteMemberData?.isDeleteMemberModalOpen}
-      onOpenChange={(open) =>
-        setDeleteMemberModalData({
-          isDeleteMemberModalOpen: open,
-          member: deleteMemberData?.member,
-        })
-      }
+      onOpenChange={onOpenChange}
     >
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
@@ -56,7 +60,11 @@ export const DeleteMemberModal = () => {
           ?
         </div>
         <DialogFooter>
-          <Button variant={"destructive"} onClick={onDeleteMember}>
+          <Button
+            variant={"destructive"}
+            onClick={onDeleteMember}
+            disabled={asyncStates.deleteMemberAsyncState === AsyncState.Pending}
+          >
             Delete
           </Button>
         </DialogFooter>

@@ -9,20 +9,21 @@ import {
 } from "@/components/ui/dialog";
 import { Separator } from "@/components/ui/separator";
 import { useTransactionsStore } from "@/store/transactions.store";
+import { AsyncState } from "@/types";
 import { toast } from "sonner";
 
 export const DeleteTransactionModal = () => {
   const { deleteTransactionData, setDeleteTransactionModalData } =
     useTransactionsPageState();
-  const { deleteTransaction } = useTransactionsStore();
+  const { deleteTransaction, asyncStates } = useTransactionsStore();
 
-  const onDeleteTransaction = () => {
+  const onDeleteTransaction = async () => {
     if (!deleteTransactionData?.transaction?.id) return;
 
     const loadingToastId = toast.loading("Deleting transaction...");
 
     try {
-      deleteTransaction(deleteTransactionData.transaction.id);
+      await deleteTransaction(deleteTransactionData.transaction.id);
       setDeleteTransactionModalData({
         isDeleteTransactionModalOpen: false,
         transaction: undefined,
@@ -34,15 +35,18 @@ export const DeleteTransactionModal = () => {
     }
   };
 
+  const onOpenChange = (isOpen: boolean) => {
+    if (asyncStates.deleteTransactionAsyncState === AsyncState.Pending) return;
+    setDeleteTransactionModalData({
+      isDeleteTransactionModalOpen: isOpen,
+      transaction: deleteTransactionData?.transaction,
+    });
+  };
+
   return (
     <Dialog
       open={deleteTransactionData?.isDeleteTransactionModalOpen}
-      onOpenChange={(open) =>
-        setDeleteTransactionModalData({
-          isDeleteTransactionModalOpen: open,
-          transaction: deleteTransactionData?.transaction,
-        })
-      }
+      onOpenChange={onOpenChange}
     >
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
@@ -53,7 +57,13 @@ export const DeleteTransactionModal = () => {
           Are you sure you want to delete this transaction ?
         </div>
         <DialogFooter>
-          <Button variant={"destructive"} onClick={onDeleteTransaction}>
+          <Button
+            variant={"destructive"}
+            onClick={onDeleteTransaction}
+            disabled={
+              asyncStates.deleteTransactionAsyncState === AsyncState.Pending
+            }
+          >
             Delete
           </Button>
         </DialogFooter>

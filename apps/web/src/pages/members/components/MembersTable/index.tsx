@@ -28,7 +28,7 @@ export const MembersTable = (props: Props) => {
       columns={membersTableColumns}
       data={members}
       pageSize={props.pageSize || 12}
-      isDataFetching={asyncStates.fetchMembersAsyncState !== AsyncState.Success}
+      isDataFetching={asyncStates.fetchMembersAsyncState === AsyncState.Pending}
       isDataFetchingFailed={
         asyncStates.fetchMembersAsyncState === AsyncState.Error
       }
