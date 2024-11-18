@@ -210,7 +210,10 @@ def issueBook(request):
 
         if total_fee > 500:
             return Response(
-                {"success": False, "error": "Total fee exceeds the limit of 500"},
+                {
+                    "success": False,
+                    "error": "Total fee debt of member exceeds the limit of Rs.500",
+                },
                 status=status.HTTP_406_NOT_ACCEPTABLE,
             )
 
